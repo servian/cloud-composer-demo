@@ -48,20 +48,7 @@ default_args = {
     "email_on_retry": False,
     "retries": 1,
     "retry_delay": timedelta(minutes=5),
-    "project": "gcp-batch-pattern"
-    # 'queue': 'bash_queue',
-    # 'pool': 'backfill',
-    # 'priority_weight': 10,
-    # 'end_date': datetime(2016, 1, 1),
-    # 'wait_for_downstream': False,
-    # 'dag': dag,
-    # 'adhoc':False,
-    # 'sla': timedelta(hours=2),
-    # 'execution_timeout': timedelta(seconds=300),
-    # 'on_failure_callback': some_function,
-    # 'on_success_callback': some_other_function,
-    # 'on_retry_callback': another_function,
-    # 'trigger_rule': u'all_success'
+    "project": "gcp-batch-pattern",
 }
 
 with DAG(
@@ -71,12 +58,11 @@ with DAG(
     schedule_interval=None,  # "*/5 * * * *",  # every 5 minutes
 ) as dag:
 
-    # t1, t2 and t3 are examples of tasks created by instantiating operators
     t1 = BigQueryOperator(
         task_id="truncate-old-records",
         sql="""
             DELETE FROM `gcp-batch-pattern.composer_demo.demo_counter`
-            WHERE inserted_ts < TIMESTAMP_SUB(inserted_ts, INTERVAL 60 MINUTE)
+            WHERE inserted_ts < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 60 MINUTE)
         """.strip(),
         use_legacy_sql=False,
         location="US",
