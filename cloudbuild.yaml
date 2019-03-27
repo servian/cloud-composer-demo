@@ -1,4 +1,5 @@
 steps:
+  # Deploy Airflow DAGs
   - name: "gcr.io/cloud-builders/gsutil"
     args:
       [
@@ -11,6 +12,8 @@ steps:
         "gs://${_COMPOSER_BUCKET}/dags",
       ]
     waitFor: ["-"]
+
+  # Deploy Airflow plugins
   - name: "gcr.io/cloud-builders/gsutil"
     args:
       [
@@ -23,6 +26,8 @@ steps:
         "gs://${_COMPOSER_BUCKET}/plugins",
       ]
     waitFor: ["-"]
+
+  # Deploy pubsub-to-firestore cloud function
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
@@ -38,6 +43,25 @@ steps:
       ]
     dir: "function"
     waitFor: ["-"]
+
+  # Deploy front-end
+  - name: "gcr.io/cloud-builders/npm"
+    id: npm-install
+    args: ["install"]
+    dir: "frontend"
+    waitFor: ["-"]
+  - name: "gcr.io/cloud-builders/npm"
+    id: npm-build
+    args: ["run", "build"]
+    dir: "frontend"
+    waitFor:
+      - npm-install
+  - name: "gcr.io/$PROJECT_ID/firebase"
+    args: ["deploy", "--project", "${_FRONTEND_PROJECT}", "--only", "hosting"]
+    dir: "frontend"
+    waitFor:
+      - npm-build
 substitutions:
   _COMPOSER_BUCKET: asia-northeast1-composer-de-4c077a35-bucket
   _PUBSUB_TOPIC: composer-demo
+  _FRONTEND_PROJECT: servian-chris-sandbox
