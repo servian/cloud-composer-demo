@@ -1,0 +1,9 @@
+steps:
+  - name: "gcr.io/cloud-builders/gsutil"
+    args:
+      [
+        "rsync",
+        "-r",
+        "airflow",
+        "gs://asia-northeast1-composer-de-4c077a35-bucket",
+      ]
