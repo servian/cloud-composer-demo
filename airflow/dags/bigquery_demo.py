@@ -15,7 +15,7 @@ def encode_pubsub_data(data):
     return b64encode(json.dumps(data).encode()).decode()
 
 
-def get_pubsub_messages(context):
+def get_pubsub_messages(**context):
     return [
         encode_pubsub_data(
             {
@@ -68,7 +68,7 @@ with DAG(
 
     t3 = PubSubPublishCallableOperator(
         topic="composer-demo",
-        task_id="publish-messages",
+        task_id="publish-pubsub-notification",
         python_callable=get_pubsub_messages,
     )
 
