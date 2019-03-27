@@ -78,7 +78,7 @@ with DAG(
         sql="""
             DELETE FROM `gcp-batch-pattern.composer_demo.demo_counter`
             WHERE inserted_ts < TIMESTAMP_SUB(inserted_ts, INTERVAL 10 MINUTE)
-        """,
+        """.strip(),
         use_legacy_sql=False,
         location="US",
     )
@@ -92,7 +92,7 @@ with DAG(
                 '{{ run_id }}' AS dag_run_id
             FROM
                 `gcp-batch-pattern.composer_demo.demo_counter`
-        """,
+        """.strip(),
         use_legacy_sql=False,
         destination_dataset_table="composer_demo.demo_counter",
         location="US",
@@ -128,7 +128,7 @@ with DAG(
                 MAX(counter) + 1 AS counter,
                 CURRENT_TIMESTAMP() AS inserted_ts,
                 '{{ run_id }}' AS dag_run_id
-        """,
+        """.strip(),
         use_legacy_sql=False,
     )
 
