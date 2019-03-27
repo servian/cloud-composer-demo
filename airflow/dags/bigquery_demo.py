@@ -10,6 +10,22 @@ from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from servian.operators import PubSubPublishCallableOperator
 
+
+def encode_pubsub_data(data):
+    return b64encode(json.dumps(data).encode()).decode()
+
+
+def get_pubsub_messages(context):
+    return [
+        encode_pubsub_data(
+            {
+                "inserted_ms": int(round(time.time() * 1000)),
+                "dag_run_id": context["dag_run"].run_id,
+            }
+        )
+    ]
+
+
 # these args will get passed on to each operator
 # you can override them on a per-task basis during operator initialization
 default_args = {
@@ -50,13 +66,10 @@ with DAG(
 
     t2 = BashOperator(task_id="sleep", depends_on_past=False, bash_command="sleep 5")
 
-    pubsub_payload = {
-        "inserted_ms": int(round(time.time() * 1000)),
-        "dag_run_id": "boo",
-    }
-    messages = [{"data": b64encode(json.dumps(pubsub_payload).encode()).decode()}]
     t3 = PubSubPublishCallableOperator(
-        topic="composer-demo", task_id="publish-messages", messages=messages
+        topic="composer-demo",
+        task_id="publish-messages",
+        python_callable=get_pubsub_messages,
     )
 
     t2.set_upstream(t1)

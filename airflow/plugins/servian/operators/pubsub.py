@@ -21,4 +21,4 @@ class PubSubPublishCallableOperator(PubSubPublishOperator):
         if self.messages is not None:
             return self.messages
         if self.python_callable is not None:
-            return self.python_callable(context)
+            return self.python_callable(**context)
