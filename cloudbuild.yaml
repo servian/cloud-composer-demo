@@ -6,7 +6,7 @@ steps:
         "-r",
         "-d",
         "-x",
-        "'.*\\.git.*''",
+        "'\\.git.*''",
         "airflow/dags",
         "gs://asia-northeast1-composer-de-4c077a35-bucket/dags",
       ]
@@ -17,7 +17,7 @@ steps:
         "-r",
         "-d",
         "-x",
-        "'.*\\.git.*''",
+        "'\\.git.*''",
         "airflow/plugins",
         "gs://asia-northeast1-composer-de-4c077a35-bucket/plugins",
       ]
