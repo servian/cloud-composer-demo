@@ -43,7 +43,6 @@ default_args = {
     "owner": "airflow",
     "depends_on_past": False,
     "start_date": airflow.utils.dates.days_ago(2),
-    "schedule_interval": "*/1 * * * *",  # every minute
     "email": ["chris.tippett@servian.com"],
     "email_on_failure": False,
     "email_on_retry": False,
@@ -69,7 +68,7 @@ with DAG(
     "bigquery_demo",
     default_args=default_args,
     description="A simple tutorial DAG",
-    schedule_interval=timedelta(days=1),
+    schedule_interval="*/1 * * * *",  # every minute,
 ) as dag:
 
     # t1, t2 and t3 are examples of tasks created by instantiating operators
