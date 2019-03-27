@@ -84,7 +84,7 @@ with DAG(
     )
 
     t2 = BigQueryOperator(
-        task_id="add-new-counter-record",
+        task_id="append-counter-record",
         sql="""
             SELECT
                 MAX(counter) + 1 AS counter,
@@ -120,7 +120,7 @@ with DAG(
     )
 
     t6 = BigQueryOperator(
-        task_id="add-new-counter-record",
+        task_id="insert-counter-record",
         sql="""
 
             INSERT `gcp-batch-pattern.composer_demo.demo_counter (counter, inserted_ts, dag_run_id)`
