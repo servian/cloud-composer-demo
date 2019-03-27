@@ -3,9 +3,11 @@ from airflow.contrib.operators.pubsub_operator import PubSubPublishOperator
 
 
 class PubSubPublishCallableOperator(PubSubPublishOperator):
+    template_fields = ["project", "topic"]
+
     def __init__(self, messages=None, python_callable=None, *args, **kwargs):
         if python_callable and not callable(python_callable):
-            raise AirflowException('`python_callable` param must be callable')
+            raise AirflowException("`python_callable` param must be callable")
         self.python_callable = python_callable
         super(PubSubPublishCallableOperator, self).__init__(
             messages=messages, *args, **kwargs

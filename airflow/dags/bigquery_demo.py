@@ -5,10 +5,10 @@ from datetime import timedelta
 
 import airflow
 from airflow import DAG
-from airflow.contrib.operators.pubsub_operator import PubSubPublishOperator
-from airflow.operators.bash_operator import BashOperator
 
-# from airflow.operators.servian import PubSubPublishCallableOperator
+# from airflow.contrib.operators.pubsub_operator import PubSubPublishOperator
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.servian import PubSubPublishCallableOperator
 
 # these args will get passed on to each operator
 # you can override them on a per-task basis during operator initialization
@@ -55,7 +55,7 @@ with DAG(
         "dag_run_id": "boo",
     }
     messages = [{"data": b64encode(json.dumps(pubsub_payload).encode())}]
-    t3 = PubSubPublishOperator(
+    t3 = PubSubPublishCallableOperator(
         topic="composer-demo", task_id="publish-messages", messages=messages
     )
 
