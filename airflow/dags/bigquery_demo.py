@@ -96,7 +96,7 @@ with DAG(
         use_legacy_sql=False,
         destination_dataset_table="composer_demo.demo_counter",
         location="US",
-        write_disposition="APPEND",
+        write_disposition="WRITE_APPEND",
     )
 
     t3 = PubSubPublishCallableOperator(
