@@ -68,7 +68,7 @@ with DAG(
     "bigquery_demo",
     default_args=default_args,
     description="A simple tutorial DAG",
-    schedule_interval="*/5 * * * *",  # every 5 minutes
+    schedule_interval=None,  # "*/5 * * * *",  # every 5 minutes
 ) as dag:
 
     # t1, t2 and t3 are examples of tasks created by instantiating operators
