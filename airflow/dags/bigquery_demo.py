@@ -68,7 +68,7 @@ with DAG(
     "bigquery_demo",
     default_args=default_args,
     description="A simple tutorial DAG",
-    schedule_interval="*/1 * * * *",  # every minute,
+    schedule_interval="*/5 * * * *",  # every 5 minutes
 ) as dag:
 
     # t1, t2 and t3 are examples of tasks created by instantiating operators
@@ -76,7 +76,7 @@ with DAG(
         task_id="truncate-old-records",
         sql="""
             DELETE FROM `gcp-batch-pattern.composer_demo.demo_counter`
-            WHERE inserted_ts < TIMESTAMP_SUB(inserted_ts, INTERVAL 10 MINUTE)
+            WHERE inserted_ts < TIMESTAMP_SUB(inserted_ts, INTERVAL 60 MINUTE)
         """.strip(),
         use_legacy_sql=False,
         location="US",
