@@ -5,7 +5,7 @@ steps:
         "rsync",
         "-r",
         "-x",
-        "\\.git.*",
+        "'.*\\.git.*''",
         "airflow",
         "gs://asia-northeast1-composer-de-4c077a35-bucket",
       ]
