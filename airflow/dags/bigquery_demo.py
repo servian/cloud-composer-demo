@@ -75,14 +75,24 @@ with DAG(
     # t1, t2 and t3 are examples of tasks created by instantiating operators
     t1 = BigQueryOperator(
         task_id="truncate-bigquery-table",
-        sql="DELETE FROM `gcp-batch-pattern.composer_demo.demo_counter` WHERE 1=1",
+        sql="""
+            DELETE FROM `gcp-batch-pattern.composer_demo.demo_counter`
+            WHERE inserted_ts < TIMESTAMP_SUB(inserted_ts, INTERVAL 10 MINUTE)
+        """,
         use_legacy_sql=False,
         location="US",
     )
 
     t2 = BigQueryOperator(
         task_id="insert-into-bigquery-table",
-        sql="SELECT MAX(counter) + 1 AS counter from `gcp-batch-pattern.composer_demo.demo_counter`",
+        sql="""
+            SELECT
+                MAX(counter) + 1 AS counter,
+                CURRENT_TIMESTAMP() AS inserted_ts,
+                {{ run_id }} AS dag_run_id
+            FROM
+                `gcp-batch-pattern.composer_demo.demo_counter`
+        """,
         use_legacy_sql=False,
         destination_dataset_table="composer_demo.demo_counter",
         location="US",
