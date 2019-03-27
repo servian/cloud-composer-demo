@@ -8,8 +8,9 @@ steps:
         "-x",
         "'.*\\.git.*'",
         "airflow/dags",
-        "gs://asia-northeast1-composer-de-4c077a35-bucket/dags",
+        "gs://${_COMPOSER_BUCKET}/dags",
       ]
+    waitFor: ["-"]
   - name: "gcr.io/cloud-builders/gsutil"
     args:
       [
@@ -19,5 +20,24 @@ steps:
         "-x",
         "'.*\\.git.*'",
         "airflow/plugins",
-        "gs://asia-northeast1-composer-de-4c077a35-bucket/plugins",
+        "gs://${_COMPOSER_BUCKET}/plugins",
       ]
+    waitFor: ["-"]
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "functions",
+        "deploy",
+        "pubsub-to-firestore",
+        "--entry-point",
+        "PubSubConsumer",
+        "--runtime",
+        "go111",
+        "--trigger-topic",
+        "${_PUBSUB_TOPIC}",
+      ]
+    dir: "function"
+    waitFor: ["-"]
+substitutions:
+  _COMPOSER_BUCKET: asia-northeast1-composer-de-4c077a35-bucket
+  _PUBSUB_TOPIC: composer-demo
