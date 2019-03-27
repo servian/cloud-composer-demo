@@ -12,4 +12,4 @@ class Servian(AirflowPlugin):
     """
 
     name = "servian"
-    hooks = [operators.PubSubPublishCallableOperator]
+    operators = [operators.PubSubPublishCallableOperator]
