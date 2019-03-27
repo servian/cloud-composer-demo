@@ -1,0 +1,216 @@
+name: "operations/4c077a35-1204-4d13-a026-b30e8ee50476"
+done: true
+sequence_number: 3
+response: "Airflow services are ready now"
+environment_creation_metadata {
+  stage: CREATION_FINISHED
+  airflow_config {
+    config {
+      key: "celery"
+      value {
+        entries {
+          key: "broker_url"
+          value: "redis://airflow-redis-service.default.svc.cluster.local:6379/0"
+        }
+        entries {
+          key: "celery_app_name"
+          value: "airflow.executors.celery_executor"
+        }
+        entries {
+          key: "default_queue"
+          value: "default"
+        }
+        entries {
+          key: "flower_port"
+          value: "5555"
+        }
+        entries {
+          key: "result_backend"
+          value: "redis://airflow-redis-service.default.svc.cluster.local:6379/0"
+        }
+        entries {
+          key: "ssl_active"
+          value: "False"
+        }
+        entries {
+          key: "worker_concurrency"
+          value: "6"
+        }
+        entries {
+          key: "worker_log_server_port"
+          value: "8793"
+        }
+      }
+    }
+    config {
+      key: "core"
+      value {
+        entries {
+          key: "airflow_home"
+          value: "/etc/airflow"
+        }
+        entries {
+          key: "base_log_folder"
+          value: "/home/airflow/gcs/logs"
+        }
+        entries {
+          key: "dag_concurrency"
+          value: "15"
+        }
+        entries {
+          key: "dagbag_import_timeout"
+          value: "30"
+        }
+        entries {
+          key: "dags_are_paused_at_creation"
+          value: "False"
+        }
+        entries {
+          key: "dags_folder"
+          value: "/home/airflow/gcs/dags"
+        }
+        entries {
+          key: "donot_pickle"
+          value: "True"
+        }
+        entries {
+          key: "enable_xcom_pickling"
+          value: "False"
+        }
+        entries {
+          key: "executor"
+          value: "CeleryExecutor"
+        }
+        entries {
+          key: "fernet_key"
+          value: "jFcKOdhJgbS-EB0XpMXG8sbyinxxaAh1orFtLlbJQps="
+        }
+        entries {
+          key: "load_examples"
+          value: "False"
+        }
+        entries {
+          key: "max_active_runs_per_dag"
+          value: "15"
+        }
+        entries {
+          key: "parallelism"
+          value: "30"
+        }
+        entries {
+          key: "plugins_folder"
+          value: "/home/airflow/gcs/plugins"
+        }
+        entries {
+          key: "remote_base_log_folder"
+          value: "gs://asia-northeast1-composer-de-4c077a35-bucket/logs"
+        }
+        entries {
+          key: "remote_log_conn_id"
+          value: "google_cloud_default"
+        }
+        entries {
+          key: "remote_logging"
+          value: "True"
+        }
+        entries {
+          key: "sql_alchemy_pool_recycle"
+          value: "1800"
+        }
+      }
+    }
+    config {
+      key: "email"
+      value {
+        entries {
+          key: "email_backend"
+          value: "airflow.contrib.utils.sendgrid.send_email"
+        }
+      }
+    }
+    config {
+      key: "kubernetes"
+      value {
+        entries {
+          key: "in_cluster"
+          value: "True"
+        }
+      }
+    }
+    config {
+      key: "scheduler"
+      value {
+        entries {
+          key: "dag_dir_list_interval"
+          value: "100"
+        }
+      }
+    }
+    config {
+      key: "smtp"
+      value {
+        entries {
+          key: "smtp_host"
+          value: "localhost"
+        }
+        entries {
+          key: "smtp_mail_from"
+          value: "no-reply@cloud.google.com"
+        }
+        entries {
+          key: "smtp_password"
+          value: "airflow"
+        }
+        entries {
+          key: "smtp_port"
+          value: "25"
+        }
+        entries {
+          key: "smtp_ssl"
+          value: "False"
+        }
+        entries {
+          key: "smtp_starttls"
+          value: "True"
+        }
+        entries {
+          key: "smtp_user"
+          value: "airflow"
+        }
+      }
+    }
+    config {
+      key: "webserver"
+      value {
+        entries {
+          key: "expose_config"
+          value: "True"
+        }
+        entries {
+          key: "secret_key"
+          value: "temporary_key"
+        }
+        entries {
+          key: "web_server_host"
+          value: "0.0.0.0"
+        }
+        entries {
+          key: "web_server_name"
+          value: "composer-demo"
+        }
+        entries {
+          key: "web_server_port"
+          value: "8080"
+        }
+        entries {
+          key: "worker_class"
+          value: "sync"
+        }
+        entries {
+          key: "workers"
+          value: "2"
+        }
+      }
+    }
+  }
+}
