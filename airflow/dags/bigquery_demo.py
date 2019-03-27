@@ -9,6 +9,13 @@ from airflow import DAG
 from airflow.contrib.operators.bigquery_operator import BigQueryOperator
 from airflow.operators.bash_operator import BashOperator
 from servian.operators import PubSubPublishCallableOperator
+from airflow.contrib.hooks.gcp_pubsub_hook import PubSubHook
+
+
+# def success_callback(context):
+#     hook = PubSubHook(gcp_conn_id=self.gcp_conn_id,
+#                         delegate_to=self.delegate_to)
+#     hook.publish(self.project, self.topic, self.messages)
 
 
 def encode_pubsub_data(data):
@@ -88,4 +95,20 @@ with DAG(
         python_callable=get_pubsub_messages,
     )
 
+    t4 = BigQueryOperator(
+        task_id="select-from-bigquery-table-1",
+        sql="SELECT 1 AS test_data",
+        use_legacy_sql=False,
+        location="US",
+    )
+
+    t5 = BigQueryOperator(
+        task_id="select-from-bigquery-table-2",
+        sql="SELECT 2 AS test_data",
+        use_legacy_sql=False,
+        location="US",
+    )
+
     t1 >> t2 >> t3
+
+    t1 >> t4 >> t5 >> t3
