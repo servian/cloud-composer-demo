@@ -19,8 +19,10 @@ def get_pubsub_messages(**context):
     return [
         encode_pubsub_data(
             {
-                "inserted_ms": int(round(time.time() * 1000)),
-                "dag_run_id": context["dag_run"].run_id,
+                "data": {
+                    "inserted_ms": int(round(time.time() * 1000)),
+                    "dag_run_id": context["dag_run"].run_id,
+                }
             }
         )
     ]
