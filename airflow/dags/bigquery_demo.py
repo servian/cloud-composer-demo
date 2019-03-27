@@ -8,7 +8,7 @@ from airflow import DAG
 
 # from airflow.contrib.operators.pubsub_operator import PubSubPublishOperator
 from airflow.operators.bash_operator import BashOperator
-from airflow.operators.servian import PubSubPublishCallableOperator
+from servian.operators.servian import PubSubPublishCallableOperator
 
 # these args will get passed on to each operator
 # you can override them on a per-task basis during operator initialization
