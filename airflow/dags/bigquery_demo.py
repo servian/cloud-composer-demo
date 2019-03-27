@@ -54,7 +54,7 @@ with DAG(
         "inserted_ms": int(round(time.time() * 1000)),
         "dag_run_id": "boo",
     }
-    messages = [{"data": b64encode(json.dumps(pubsub_payload).encode())}]
+    messages = [{"data": b64encode(json.dumps(pubsub_payload).encode()).decode()}]
     t3 = PubSubPublishCallableOperator(
         topic="composer-demo", task_id="publish-messages", messages=messages
     )
