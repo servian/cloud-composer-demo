@@ -19,11 +19,11 @@ func SaveToFirestore(ctx context.Context, data map[string]interface{}) error {
 	defer client.Close()
 
 	// Add data
-	_, _, err = client.Collection("composer").Add(ctx, data)
+	_, _, err = client.Collection("messages").Add(ctx, data)
 	if err != nil {
 		jsonData, _ := json.Marshal(data)
 		log.Printf(string(jsonData))
-		log.Fatalf("Failed adding message: %v", err)
+		log.Fatalf("Failed adding message to Firestore: %v", err)
 	}
 	return nil
 }
