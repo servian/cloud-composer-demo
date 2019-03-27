@@ -49,6 +49,7 @@ default_args = {
     "retries": 1,
     "retry_delay": timedelta(minutes=5),
     "project": "gcp-batch-pattern",
+    "location": "US",
 }
 
 with DAG(
@@ -65,7 +66,6 @@ with DAG(
             WHERE inserted_ts < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 60 MINUTE)
         """.strip(),
         use_legacy_sql=False,
-        location="US",
     )
 
     t2 = BigQueryOperator(
@@ -80,7 +80,6 @@ with DAG(
         """.strip(),
         use_legacy_sql=False,
         destination_dataset_table="composer_demo.demo_counter",
-        location="US",
         write_disposition="WRITE_APPEND",
     )
 
@@ -119,8 +118,15 @@ with DAG(
         use_legacy_sql=False,
     )
 
+    t7 = BigQueryOperator(
+        task_id="select-from-bigquery-2",
+        sql="SELECT aiwhdiwuadaiwudhawiud111 AS &&;;;1421425%%%",
+        use_legacy_sql=False,
+        location="US",
+    )
+
     t1 >> t2 >> t3
 
     t1 >> t4 >> t5 >> t3
 
-    t6 >> t3
+    t6 >> t7
