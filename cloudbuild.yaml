@@ -49,22 +49,22 @@ steps:
 
   # Deploy front-end
   - name: "gcr.io/cloud-builders/npm"
-    id: "npm install"
+    id: "Install frontend dependencies"
     args: ["install"]
     dir: "frontend"
     waitFor: ["-"]
   - name: "gcr.io/cloud-builders/npm"
-    id: "npm build"
+    id: "Build frontend"
     args: ["run", "build"]
     dir: "frontend"
     waitFor:
-      - "npm install"
+      - "Install frontend dependencies"
   - name: "gcr.io/$PROJECT_ID/firebase"
-    id: "deploy frontend"
+    id: "Deploy frontend"
     args: ["deploy", "--project", "${_FRONTEND_PROJECT}", "--only", "hosting"]
     dir: "frontend"
     waitFor:
-      - "npm build"
+      - "Build frontend"
 substitutions:
   _COMPOSER_BUCKET: asia-northeast1-composer-de-4c077a35-bucket
   _PUBSUB_TOPIC: composer-demo
