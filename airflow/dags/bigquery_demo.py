@@ -123,11 +123,13 @@ with DAG(
         task_id="insert-counter-record",
         sql="""
 
-            INSERT `gcp-batch-pattern.composer_demo.demo_counter (counter, inserted_ts, dag_run_id)`
+            INSERT `gcp-batch-pattern.composer_demo.demo_counter` (counter, inserted_ts, dag_run_id)
             SELECT
                 MAX(counter) + 1 AS counter,
                 CURRENT_TIMESTAMP() AS inserted_ts,
                 '{{ run_id }}' AS dag_run_id
+            FROM
+                `gcp-batch-pattern.composer_demo.demo_counter`
         """.strip(),
         use_legacy_sql=False,
     )
