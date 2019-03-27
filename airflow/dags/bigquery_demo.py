@@ -43,7 +43,7 @@ default_args = {
     "owner": "airflow",
     "depends_on_past": False,
     "start_date": airflow.utils.dates.days_ago(2),
-    "schedule_interval": None,
+    "schedule_interval": "*/1 * * * *",  # every minute
     "email": ["chris.tippett@servian.com"],
     "email_on_failure": False,
     "email_on_retry": False,
@@ -74,7 +74,7 @@ with DAG(
 
     # t1, t2 and t3 are examples of tasks created by instantiating operators
     t1 = BigQueryOperator(
-        task_id="truncate-bigquery-table",
+        task_id="truncate-old-records",
         sql="""
             DELETE FROM `gcp-batch-pattern.composer_demo.demo_counter`
             WHERE inserted_ts < TIMESTAMP_SUB(inserted_ts, INTERVAL 10 MINUTE)
@@ -84,7 +84,7 @@ with DAG(
     )
 
     t2 = BigQueryOperator(
-        task_id="insert-into-bigquery-table",
+        task_id="add-new-counter-record",
         sql="""
             SELECT
                 MAX(counter) + 1 AS counter,
@@ -106,14 +106,14 @@ with DAG(
     )
 
     t4 = BigQueryOperator(
-        task_id="select-from-bigquery-table-1",
+        task_id="select-from-bigquery-1",
         sql="SELECT 1 AS test_data",
         use_legacy_sql=False,
         location="US",
     )
 
     t5 = BigQueryOperator(
-        task_id="select-from-bigquery-table-2",
+        task_id="select-from-bigquery-2",
         sql="SELECT 2 AS test_data",
         use_legacy_sql=False,
         location="US",
