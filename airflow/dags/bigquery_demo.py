@@ -119,7 +119,7 @@ with DAG(
     )
 
     t7 = BigQueryOperator(
-        task_id="select-from-bigquery-2",
+        task_id="select-from-bigquery-3",
         sql="SELECT aiwhdiwuadaiwudhawiud111 AS &&;;;1421425%%%",
         use_legacy_sql=False,
         location="US",
