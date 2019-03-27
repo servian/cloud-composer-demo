@@ -6,7 +6,7 @@ from datetime import timedelta
 import airflow
 from airflow import DAG
 
-# from airflow.contrib.operators.pubsub_operator import PubSubPublishOperator
+from airflow.contrib.operators.bigquery_operator import BigQueryOperator
 from airflow.operators.bash_operator import BashOperator
 from servian.operators import PubSubPublishCallableOperator
 
@@ -22,6 +22,8 @@ def get_pubsub_messages(**context):
                 {
                     "inserted_ms": int(round(time.time() * 1000)),
                     "dag_run_id": context["dag_run"].run_id,
+                    "dag_id": context["dag"].dag_id,
+                    "status": "Success",
                 }
             )
         }
@@ -64,9 +66,21 @@ with DAG(
 ) as dag:
 
     # t1, t2 and t3 are examples of tasks created by instantiating operators
-    t1 = BashOperator(task_id="print_date", bash_command="date")
+    t1 = BigQueryOperator(
+        task_id="truncate-bigquery-table",
+        sql="DELETE FROM `gcp-batch-pattern.composer_demo.demo_counter` WHERE 1=1",
+        use_legacy_sql=False,
+        location="US",
+    )
 
-    t2 = BashOperator(task_id="sleep", depends_on_past=False, bash_command="sleep 5")
+    t2 = BigQueryOperator(
+        task_id="insert-into-bigquery-table",
+        sql="SELECT MAX(counter) + 1 AS counter from `gcp-batch-pattern.composer_demo.demo_counter`",
+        use_legacy_sql=False,
+        destination_dataset_table="composer_demo.demo_counter",
+        location="US",
+        write_disposition="APPEND",
+    )
 
     t3 = PubSubPublishCallableOperator(
         topic="composer-demo",
@@ -74,5 +88,4 @@ with DAG(
         python_callable=get_pubsub_messages,
     )
 
-    t2.set_upstream(t1)
-    t3.set_upstream(t1)
+    t1 >> t2 >> t3
