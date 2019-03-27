@@ -89,7 +89,7 @@ with DAG(
             SELECT
                 MAX(counter) + 1 AS counter,
                 CURRENT_TIMESTAMP() AS inserted_ts,
-                {{ run_id }} AS dag_run_id
+                '{{ run_id }}' AS dag_run_id
             FROM
                 `gcp-batch-pattern.composer_demo.demo_counter`
         """,
@@ -119,6 +119,21 @@ with DAG(
         location="US",
     )
 
+    t6 = BigQueryOperator(
+        task_id="add-new-counter-record",
+        sql="""
+
+            INSERT `gcp-batch-pattern.composer_demo.demo_counter (counter, inserted_ts, dag_run_id)`
+            SELECT
+                MAX(counter) + 1 AS counter,
+                CURRENT_TIMESTAMP() AS inserted_ts,
+                '{{ run_id }}' AS dag_run_id
+        """,
+        use_legacy_sql=False,
+    )
+
     t1 >> t2 >> t3
 
     t1 >> t4 >> t5 >> t3
+
+    t6 >> t3
