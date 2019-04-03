@@ -7,6 +7,7 @@ import airflow
 from airflow import DAG
 
 from airflow.contrib.operators.bigquery_operator import BigQueryOperator
+# from airflow.contrib.hooks.gcp_pubsub_hook import PubSubHook
 from airflow.operators.bash_operator import BashOperator
 from servian.operators import PubSubPublishCallableOperator
 from airflow.contrib.hooks.gcp_pubsub_hook import PubSubHook
@@ -28,13 +29,22 @@ def get_pubsub_messages(**context):
             "data": encode_pubsub_data(
                 {
                     "inserted_ms": int(round(time.time() * 1000)),
-                    "dag_run_id": context["dag_run"].run_id,
+                    "dag_run_id": context["dag_run"].run_id if context.get("dag_run") else None,
                     "dag_id": context["dag"].dag_id,
-                    "status": "Success",
+                    "message": "Woo! The data is ready!!! 🎉"
                 }
             )
         }
     ]
+
+
+# def pubsub_callback(
+#     project, topic, gcp_conn_id="google_cloud_default", delegate_to=None
+# ):
+#     def fn(context):
+#         messages = get_pubsub_messages(**context)
+#         hook = PubSubHook(gcp_conn_id=gcp_conn_id, delegate_to=delegate_to)
+#         hook.publish(project, topic, messages)
 
 
 # these args will get passed on to each operator
@@ -50,6 +60,9 @@ default_args = {
     "retry_delay": timedelta(minutes=5),
     "project": "gcp-batch-pattern",
     "location": "US",
+    # "on_success_callback": pubsub_callback(
+    #     project="gcp-batch-pattern", topic="composer-demo"
+    # ),
 }
 
 with DAG(
@@ -106,7 +119,6 @@ with DAG(
     t6 = BigQueryOperator(
         task_id="insert-counter-record",
         sql="""
-
             INSERT `gcp-batch-pattern.composer_demo.demo_counter` (counter, inserted_ts, dag_run_id)
             SELECT
                 MAX(counter) + 1 AS counter,
@@ -118,15 +130,6 @@ with DAG(
         use_legacy_sql=False,
     )
 
-    t7 = BigQueryOperator(
-        task_id="select-from-bigquery-3",
-        sql="SELECT aiwhdiwuadaiwudhawiud111 AS &&;;;1421425%%%",
-        use_legacy_sql=False,
-        location="US",
-    )
-
     t1 >> t2 >> t3
 
     t1 >> t4 >> t5 >> t3
-
-    t6 >> t7
