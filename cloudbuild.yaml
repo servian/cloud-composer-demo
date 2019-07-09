@@ -66,6 +66,6 @@ steps:
     waitFor:
       - "Build frontend"
 substitutions:
-  _COMPOSER_BUCKET: asia-northeast1-composer-de-4c077a35-bucket
+  _COMPOSER_BUCKET: asia-northeast1-crown-compo-e8498d8f-bucket
   _PUBSUB_TOPIC: composer-demo
   _FRONTEND_PROJECT: servian-chris-sandbox
